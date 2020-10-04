@@ -131,8 +131,7 @@ open class KDDragAndDropCollectionView: UICollectionView, KDDraggable, KDDroppab
         
         self.draggingPathOfCellBeingDragged = self.indexPathForItem(at: point)
         
-//        self.reloadData()
-        self.reloadWithOutAnimation()
+        self.reloadData()
         self.didStartDragging?()
     }
     

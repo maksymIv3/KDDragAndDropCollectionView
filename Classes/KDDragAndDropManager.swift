@@ -95,6 +95,7 @@ public class KDDragAndDropManager: NSObject, UIGestureRecognizerDelegate {
             
             representation.frame = self.canvas.convert(representation.frame, from: view)
             //representation.alpha = 0.5
+            representation.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
             if let decoredView = draggable.stylingRepresentationView(representation) {
                 representation = decoredView
             }

@@ -58,6 +58,8 @@ open class KDDragAndDropCollectionView: UICollectionView, KDDraggable, KDDroppab
     }
     
     public var draggingPathOfCellBeingDragged : IndexPath?
+    public var didStartDragging: (() -> Void)?
+    public var didEndDragging: (() -> Void)?
     
     var iDataSource : UICollectionViewDataSource?
     var iDelegate : UICollectionViewDelegate?
@@ -129,8 +131,9 @@ open class KDDragAndDropCollectionView: UICollectionView, KDDraggable, KDDroppab
         
         self.draggingPathOfCellBeingDragged = self.indexPathForItem(at: point)
         
-        self.reloadData()
-        
+//        self.reloadData()
+        self.reloadWithOutAnimation()
+        self.didStartDragging?()
     }
     
     public func stopDragging() -> Void {
@@ -143,8 +146,9 @@ open class KDDragAndDropCollectionView: UICollectionView, KDDraggable, KDDroppab
         
         self.draggingPathOfCellBeingDragged = nil
         
-        self.reloadData()
-        
+//        self.reloadData()
+        self.reloadWithOutAnimation()
+        self.didEndDragging?()
     }
     
     public func dragDataItem(_ item : AnyObject) -> Void {
@@ -170,7 +174,8 @@ open class KDDragAndDropCollectionView: UICollectionView, KDDraggable, KDDroppab
                 self.deleteItems(at: [existngIndexPath])
             }, completion: { complete -> Void in
                 self.animating = false
-                self.reloadData()
+//                self.reloadData()
+                self.reloadWithOutAnimation()
             })
         }
         
@@ -255,7 +260,8 @@ open class KDDragAndDropCollectionView: UICollectionView, KDDraggable, KDDroppab
                 // if in the meantime we have let go
                 if self.draggingPathOfCellBeingDragged == nil {
                     
-                    self.reloadData()
+//                    self.reloadData()
+                    self.reloadWithOutAnimation()
                 }
                 
                 
@@ -351,8 +357,8 @@ open class KDDragAndDropCollectionView: UICollectionView, KDDraggable, KDDroppab
                     self.moveItem(at: existingIndexPath, to: indexPath)
                 }, completion: { (finished) -> Void in
                     self.animating = false
-                    self.reloadData()
-                    
+//                    self.reloadData()
+                    self.reloadWithOutAnimation()
                 })
                 
                 self.draggingPathOfCellBeingDragged = indexPath
@@ -393,7 +399,8 @@ open class KDDragAndDropCollectionView: UICollectionView, KDDraggable, KDDroppab
                 self.deleteItems(at: [existngIndexPath])
             }, completion: { (finished) -> Void in
                 self.animating = false;
-                self.reloadData()
+//                self.reloadData()
+                self.reloadWithOutAnimation()
             })
             
         }
@@ -413,21 +420,40 @@ open class KDDragAndDropCollectionView: UICollectionView, KDDraggable, KDDroppab
     public func dropDataItem(_ item : AnyObject, atRect : CGRect) -> Void {
         
         // show hidden cell
-        if  let index = draggingPathOfCellBeingDragged,
+        if let index = draggingPathOfCellBeingDragged,
             let cell = self.cellForItem(at: index), cell.isHidden == true {
             
-            cell.alpha = 1
+//            cell.alpha = 1
             cell.isHidden = false
             
         }
         
         currentInRect = nil
         
-        self.draggingPathOfCellBeingDragged = nil
+//        self.reloadData()
         
-        self.reloadData()
+        UIView.setAnimationsEnabled(false)
         
+        self.performBatchUpdates({
+            if let index = draggingPathOfCellBeingDragged {
+                self.draggingPathOfCellBeingDragged = nil
+                self.reloadSections([index.section])
+            } else {
+                self.draggingPathOfCellBeingDragged = nil
+                self.reloadData()
+            }
+        }, completion: { _ in
+            UIView.setAnimationsEnabled(true)
+        })
     }
     
-    
+    func reloadWithOutAnimation() {
+        UIView.setAnimationsEnabled(false)
+        
+        self.performBatchUpdates({
+            self.reloadData()
+        }, completion: { _ in
+            UIView.setAnimationsEnabled(true)
+        })
+    }
 }

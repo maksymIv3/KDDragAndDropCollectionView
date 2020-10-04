@@ -95,15 +95,10 @@ class ViewController: UIViewController, KDDragAndDropCollectionViewDataSource {
         cell.backgroundColor = dataItem.colour
         
         cell.isHidden = false
-        
         if let kdCollectionView = collectionView as? KDDragAndDropCollectionView {
-            
             if let draggingPathOfCellBeingDragged = kdCollectionView.draggingPathOfCellBeingDragged {
-                
                 if draggingPathOfCellBeingDragged.item == indexPath.item {
-                    
                     cell.isHidden = true
-                    
                 }
             }
         }

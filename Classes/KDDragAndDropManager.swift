@@ -77,6 +77,16 @@ public class KDDragAndDropManager: NSObject, UIGestureRecognizerDelegate {
         self.canvas.isMultipleTouchEnabled = false
         self.canvas.addGestureRecognizer(self.longPressGestureRecogniser)
         self.views = collectionViews
+        
+        if #available(iOS 13.0, *) {
+            NotificationCenter.default.addObserver(self, selector: #selector(willResignActive), name: UIScene.willDeactivateNotification, object: nil)
+        } else {
+            NotificationCenter.default.addObserver(self, selector: #selector(willResignActive), name: UIApplication.willResignActiveNotification, object: nil)
+        }
+    }
+    
+    @objc func willResignActive(_ notification: Notification) {
+        finishDragging()
     }
     
     public func clearState() {
@@ -209,27 +219,35 @@ public class KDDragAndDropManager: NSObject, UIGestureRecognizerDelegate {
             
         case .ended :
             
-            if bundle.sourceDraggableView != bundle.overDroppableView { // if we are actually dropping over a new view.
-                
-                if let droppable = bundle.overDroppableView as? KDDroppable {
-                    
-                    sourceDraggable.dragDataItem(bundle.dataItem)
-                    
-                    let rect = self.canvas.convert(bundle.representationImageView.frame, to: bundle.overDroppableView)
-                    
-                    droppable.dropDataItem(bundle.dataItem, atRect: rect)
-                    
-                }
-            }
-            
-            bundle.representationImageView.removeFromSuperview()
-            sourceDraggable.stopDragging()
+            finishDragging()
             
         default:
             break
             
         }
         
+    }
+    
+    func finishDragging() {
+        guard let bundle = self.bundle else { return }
+        
+        let sourceDraggable : KDDraggable = bundle.sourceDraggableView as! KDDraggable
+        
+        if bundle.sourceDraggableView != bundle.overDroppableView { // if we are actually dropping over a new view.
+            
+            if let droppable = bundle.overDroppableView as? KDDroppable {
+                
+                sourceDraggable.dragDataItem(bundle.dataItem)
+                
+                let rect = self.canvas.convert(bundle.representationImageView.frame, to: bundle.overDroppableView)
+                
+                droppable.dropDataItem(bundle.dataItem, atRect: rect)
+                
+            }
+        }
+        
+        bundle.representationImageView.removeFromSuperview()
+        sourceDraggable.stopDragging()
     }
     
     // MARK: Helper Methods

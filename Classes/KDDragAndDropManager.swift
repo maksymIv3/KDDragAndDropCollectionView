@@ -79,6 +79,11 @@ public class KDDragAndDropManager: NSObject, UIGestureRecognizerDelegate {
         self.views = collectionViews
     }
     
+    public func clearState() {
+        views.removeAll()
+        canvas.removeGestureRecognizer(longPressGestureRecogniser)
+    }
+    
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         
         guard gestureRecognizer.state == .possible else { return false }

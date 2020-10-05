@@ -85,6 +85,10 @@ public class KDDragAndDropManager: NSObject, UIGestureRecognizerDelegate {
         }
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     @objc func willResignActive(_ notification: Notification) {
         finishDragging()
     }

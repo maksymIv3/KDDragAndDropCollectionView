@@ -47,7 +47,6 @@ public protocol KDDroppable {
     func didMoveItem(_ item : AnyObject, inRect rect : CGRect) -> Void
     func didMoveOutItem(_ item : AnyObject) -> Void
     func dropDataItem(_ item : AnyObject, atRect : CGRect) -> Void
-    func dropDataItemCenter() -> CGPoint
 }
 
 public class KDDragAndDropManager: NSObject, UIGestureRecognizerDelegate {
@@ -94,13 +93,6 @@ public class KDDragAndDropManager: NSObject, UIGestureRecognizerDelegate {
         finishDragging()
     }
     
-    public func clearState() {
-        views = []
-        canvas.removeGestureRecognizer(longPressGestureRecogniser)
-        canvas = UIView()
-        longPressGestureRecogniser = UILongPressGestureRecognizer()
-        bundle = nil
-    }
     
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         
@@ -251,17 +243,8 @@ public class KDDragAndDropManager: NSObject, UIGestureRecognizerDelegate {
             }
         }
         
-        UIView.animate(withDuration: 3,
-                       delay: 0,
-                       options: .beginFromCurrentState,
-                       animations: {
-                        bundle.representationImageView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
-                        let droppable = bundle.sourceDraggableView as? KDDroppable
-                        bundle.representationImageView.center = droppable?.dropDataItemCenter() ?? .zero
-        }, completion: { _ in
-            bundle.representationImageView.removeFromSuperview()
-            sourceDraggable.stopDragging()
-        })
+        bundle.representationImageView.removeFromSuperview()
+        sourceDraggable.stopDragging()
     }
     
     // MARK: Helper Methods

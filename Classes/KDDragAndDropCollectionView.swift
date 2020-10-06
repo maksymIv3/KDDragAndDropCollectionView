@@ -176,7 +176,7 @@ open class KDDragAndDropCollectionView: UICollectionView, KDDraggable, KDDroppab
             }, completion: { complete -> Void in
                 self.animating = false
 //                self.reloadData()
-                self.reloadSection(at: existngIndexPath.section)
+//                self.reloadSection(at: existngIndexPath.section)
             })
         }
         
@@ -262,7 +262,7 @@ open class KDDragAndDropCollectionView: UICollectionView, KDDraggable, KDDroppab
                 if self.draggingPathOfCellBeingDragged == nil {
                     
 //                    self.reloadData()
-                    self.reloadSection(at: indexPath.section)
+//                    self.reloadSection(at: indexPath.section)
                 }
                 
                 
@@ -359,7 +359,7 @@ open class KDDragAndDropCollectionView: UICollectionView, KDDraggable, KDDroppab
                 }, completion: { (finished) -> Void in
                     self.animating = false
 //                    self.reloadData()
-                    self.reloadSection(at: indexPath.section)
+//                    self.reloadSection(at: indexPath.section)
                 })
                 
                 self.draggingPathOfCellBeingDragged = indexPath
@@ -401,7 +401,7 @@ open class KDDragAndDropCollectionView: UICollectionView, KDDraggable, KDDroppab
             }, completion: { (finished) -> Void in
                 self.animating = false;
 //                self.reloadData()
-                self.reloadSection(at: existngIndexPath.section)
+//                self.reloadSection(at: existngIndexPath.section)
             })
             
         }

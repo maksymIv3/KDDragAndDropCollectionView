@@ -136,6 +136,14 @@ open class KDDragAndDropCollectionView: UICollectionView, KDDraggable, KDDroppab
         self.didStartDragging?()
     }
     
+    public func dropDataItemCenter() -> CGPoint {
+        if let indexPath = self.draggingPathOfCellBeingDragged {
+            return layoutAttributesForItem(at: indexPath)?.center ?? .zero
+        } else {
+            return .zero
+        }
+    }
+    
     public func stopDragging() -> Void {
         
         if let idx = self.draggingPathOfCellBeingDragged {

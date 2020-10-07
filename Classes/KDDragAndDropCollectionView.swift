@@ -385,7 +385,7 @@ open class KDDragAndDropCollectionView: UICollectionView, KDDraggable, KDDroppab
             return .zero
         }
         let cellCenter = dragDropDataSource.collectionView(self, cellForItemAt: existngIndexPath).center
-        return CGPoint(x: self.frame.origin.x + cellCenter.x, y: self.frame.origin.y + cellCenter.y)
+        return CGPoint(x: self.frame.origin.x + abs(contentOffset.x - cellCenter.x), y: self.frame.origin.y + abs(contentOffset.y - cellCenter.y))
     }
     
     public func didMoveOutItem(_ item : AnyObject) -> Void {

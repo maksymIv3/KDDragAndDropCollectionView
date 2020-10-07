@@ -291,10 +291,10 @@ open class KDDragAndDropCollectionView: UICollectionView, KDDraggable, KDDroppab
         var rectForNextScroll : CGRect = currentRect
         
         if isHorizontal {
-            
+
             let leftBoundary = CGRect(x: -30.0, y: 0.0, width: 30.0, height: self.frame.size.height)
             let rightBoundary = CGRect(x: self.frame.size.width, y: 0.0, width: 30.0, height: self.frame.size.height)
-            
+
             if rect.intersects(leftBoundary) == true {
                 rectForNextScroll.origin.x -= self.bounds.size.width * 0.5
                 if rectForNextScroll.origin.x < 0 {
@@ -307,12 +307,12 @@ open class KDDragAndDropCollectionView: UICollectionView, KDDraggable, KDDroppab
                     rectForNextScroll.origin.x = self.contentSize.width - self.bounds.size.width
                 }
             }
-            
+
         } else { // is vertical
-            
+
             let topBoundary = CGRect(x: 0.0, y: -30.0, width: self.frame.size.width, height: 30.0)
             let bottomBoundary = CGRect(x: 0.0, y: self.frame.size.height, width: self.frame.size.width, height: 30.0)
-            
+
             if rect.intersects(topBoundary) == true {
                 rectForNextScroll.origin.y -= self.bounds.size.height * 0.5
                 if rectForNextScroll.origin.y < 0 {
@@ -368,17 +368,24 @@ open class KDDragAndDropCollectionView: UICollectionView, KDDraggable, KDDroppab
         }
         
         // Check Paging
-        
+
         var normalizedRect = rect
         normalizedRect.origin.x -= self.contentOffset.x
         normalizedRect.origin.y -= self.contentOffset.y
-        
+
         currentInRect = normalizedRect
-        
         
         self.checkForEdgesAndScroll(normalizedRect)
         
-        
+    }
+    
+    public func dropItemCenter(_ item : AnyObject) -> CGPoint {
+        guard let dragDropDataSource = self.dataSource as? KDDragAndDropCollectionViewDataSource,
+            let existngIndexPath = dragDropDataSource.collectionView(self, indexPathForDataItem: item) else {
+            return .zero
+        }
+        let cellCenter = dragDropDataSource.collectionView(self, cellForItemAt: existngIndexPath).center
+        return CGPoint(x: self.frame.origin.x + cellCenter.x, y: self.frame.origin.y + cellCenter.y)
     }
     
     public func didMoveOutItem(_ item : AnyObject) -> Void {
